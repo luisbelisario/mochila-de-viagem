@@ -1,1 +1,1 @@
-# alura-armazenando-na-web
+# sistema para treinar armazenamento no localStorage
