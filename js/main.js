@@ -24,7 +24,7 @@ form.addEventListener("submit", (event) => {
         console.log(`Esse elemento já existe no array com o id ${existe.id}! O item será atualizado!`);
         atualizarElemento(itemAtual);
         // para atualizar o localStorage basta atualizar meu array de itens
-        itens[existe.id] = itemAtual;
+        itens[itens.findIndex(elemento => elemento.id === existe.id)] = itemAtual;
         // o meu array itens na posição daquele id será atualizado
     } else {
         console.log(nome);
@@ -32,14 +32,14 @@ form.addEventListener("submit", (event) => {
         console.log(quantidade);
         console.log(quantidade.value);
 
-        itemAtual.id = itens.length;
+        itemAtual.id = itens[itens.length-1] ? itens[itens.length-1].id + 1 : 0;
 
         itens.push(itemAtual);
 
         criarElemento(itemAtual);
     }
 
-    localStorage.setItem("itens", JSON.stringify(itens))
+    localStorage.setItem("itens", JSON.stringify(itens));
     // havendo ou não atualização o array será passado para o localStorage, atualizando-o
     // será como se a cada submit eu descartasse o localStorage atual e criasse um novo
 
@@ -60,6 +60,8 @@ function criarElemento(item) {
 
     novoItem.innerHTML += item.nome;
 
+    novoItem.appendChild(botaoDelete(item.id));
+
     lista.appendChild(novoItem);
 }
 
@@ -68,4 +70,23 @@ function atualizarElemento(item) {
     console.log('Elemento a ter seu valor atualizado');
     console.log(elemento);
     elemento.innerHTML = item.quantidade;
+}
+
+function botaoDelete(id) {
+    const elementoBotao = document.createElement("button");
+    elementoBotao.innerText = "deletar";
+
+    elementoBotao.addEventListener("click", function () {
+        deletaElemento(this.parentNode, id);
+    });
+
+    return elementoBotao;
+}
+
+function deletaElemento(elemento, idElemento) {
+    elemento.remove();
+
+    itens.splice(itens.findIndex(elemento => elemento.id === idElemento), 1)
+
+    localStorage.setItem("itens", JSON.stringify(itens));
 }
